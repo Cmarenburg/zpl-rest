@@ -402,6 +402,7 @@ rest.post('/rest/printer', function(req, res) {
 rest.post('/rest/label', function(req, res) {
   var response;
   var broadcast = {};
+  console.log(req.body);
   broadcast.source = "label";
   if (req.body._id) {
     broadcast.action = "update";

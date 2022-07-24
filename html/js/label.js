@@ -63,6 +63,7 @@ $(document).ready(function() {
               if (value._id == $this.data("id")) {
                 $('#labelid').val(value._id);
                 $('#edittype').val(value.type);
+                $('#editname').data("original", value.type);
                 $('#editname').val(value.name);
                 $('#editname').data("original", value.name);
                 $('#editwidth').val(value.width);
