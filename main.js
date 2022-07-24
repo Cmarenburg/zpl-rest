@@ -264,9 +264,12 @@ rest.post('/rest/print', function(req, res) {
   if (!req.body.printer) {
     return res.status(400).send('no printer id was given');
   }
-  if (!req.body.label) {
-    return res.status(400).send('no label id was given');
+  if (!req.body.label || !req.body.type) {
+    return res.status(400).send('no label id was given or no label type given');
   }
+  // if(!req.body.type){
+  //   return res.status(400).send('no type was given');
+  // }
 
   var printer = db.printer.findOne({
     _id: req.body.printer
@@ -274,11 +277,21 @@ rest.post('/rest/print', function(req, res) {
   if (!printer) {
     return res.status(400).send('given printer id was not valid');
   }
-  var label = db.label.findOne({
-    _id: req.body.label
-  });
-  if (!label) {
-    return res.status(400).send('given label id was not valid');
+
+  var label;
+
+  if(req.body.type){
+    label = db.label.findOne({
+      type: req.body.type
+    });
+
+  } else {
+    label = db.label.findOne({
+      _id: req.body.label
+    });
+  }
+  if (!label || label === null) {
+    return res.status(400).send('given label id was not valid or label type does not exist');
   }
 
   var job = {};

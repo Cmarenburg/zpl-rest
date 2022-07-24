@@ -8,7 +8,8 @@ $(document).ready(function() {
       data: JSON.stringify({
         name: $('#newname').val(),
         width: $('#newwidth').val(),
-        height: $('#newheight').val()
+        height: $('#newheight').val(),
+        type: $('#newtype').val(),
       }),
       dataType: 'json',
       success: function(data) {
@@ -16,6 +17,7 @@ $(document).ready(function() {
         $('#newname').val("");
         $('#newwidth').val("");
         $('#newheight').val("");
+        $('#newtype').val("");
       },
       error: function(data) {
         toastr.error('creation failed')
@@ -60,6 +62,7 @@ $(document).ready(function() {
             $.each(data, function(index, value) {
               if (value._id == $this.data("id")) {
                 $('#labelid').val(value._id);
+                $('#edittype').val(value.type);
                 $('#editname').val(value.name);
                 $('#editname').data("original", value.name);
                 $('#editwidth').val(value.width);
@@ -105,7 +108,8 @@ $(document).ready(function() {
         name: $('#editname').val(),
         zpl: $('#editzpl').val(),
         width: $('#editwidth').val(),
-        height: $('#editheight').val()
+        height: $('#editheight').val(),
+        type: $('#edittype').val(),
       }),
       dataType: 'json',
       success: function(data) {
@@ -132,6 +136,7 @@ $(document).ready(function() {
         $('#editzpl').data("original", $('#editzpl').val());
         $('#editwidth').data("original", $('#editwidth').val());
         $('#editheight').data("original", $('#editheight').val());
+        $('#edittype').data("original", $('#edittype').val());
         enableTestButton();
       },
       error: function(data) {
