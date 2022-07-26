@@ -264,12 +264,28 @@ rest.post('/rest/print', function(req, res) {
   if (!req.body.printer) {
     return res.status(400).send('no printer id was given');
   }
-  if (!req.body.label || !req.body.type) {
-    return res.status(400).send('no label id was given or no label type given');
+
+  // If both label and type are given return error
+  if (req.body.label && req.body.type) {
+    return res.status(400).send('label id and label type are mutually exclusive');
   }
-  // if(!req.body.type){
-  //   return res.status(400).send('no type was given');
-  // }
+
+  // Require either label id or label type not both
+  // Should return the same error
+
+  console.log(req.body);
+
+  if (req.body.label) {
+    console.log(req.body.label);
+  }
+
+  if (req.body.type) {
+    console.log(req.body.type);
+  }
+  
+  if(!req.body.label && !req.body.type){
+    return res.status(400).send('no label id or label type was given');
+  }; 
 
   var printer = db.printer.findOne({
     _id: req.body.printer
@@ -313,6 +329,13 @@ rest.post('/rest/print', function(req, res) {
   }
 
   var mustache_reg = /{{(.*)}}/gm;
+
+  console.log('Mustache ?');
+  console.log(mustache_reg.exec(job.zpl));
+
+  console.log('Loggin items');
+  console.log(job.data.items);
+
   if (mustache_reg.exec(job.zpl)) {
     job.mustache = true;
     job.zpl = Mustache.render(job.zpl, job.data);
@@ -402,7 +425,9 @@ rest.post('/rest/printer', function(req, res) {
 rest.post('/rest/label', function(req, res) {
   var response;
   var broadcast = {};
-  console.log(req.body);
+
+  // console.log(req.body);
+  
   broadcast.source = "label";
   if (req.body._id) {
     broadcast.action = "update";
