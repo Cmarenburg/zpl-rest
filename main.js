@@ -264,6 +264,10 @@ rest.post('/rest/print', function(req, res) {
   if (!req.body.printer) {
     return res.status(400).send('no printer id was given');
   }
+  
+  if(req.body.data) {
+    console.log(data);
+  }
 
   // If both label and type are given return error
   if (req.body.label && req.body.type) {
