@@ -270,20 +270,8 @@ rest.post('/rest/print', function(req, res) {
     return res.status(400).send('label id and label type are mutually exclusive');
   }
 
-  // Require either label id or label type not both
-  // Should return the same error
-
-  console.log(req.body);
-
-  if (req.body.label) {
-    console.log(req.body.label);
-  }
-
-  if (req.body.type) {
-    console.log(req.body.type);
-  }
   
-  if((!req.body.label && req.body.type) || (req.body.label && !req.body.type)){
+  if(req.body.label == null && req.body.type == null){
     return res.status(400).send('no label id or label type was given');
   }; 
 
@@ -330,11 +318,6 @@ rest.post('/rest/print', function(req, res) {
 
   var mustache_reg = /{{(.*)}}/gm;
 
-  console.log('Mustache ?');
-  console.log(mustache_reg.exec(job.zpl));
-
-  console.log('Loggin items');
-  console.log(job.data.items);
 
   if (mustache_reg.exec(job.zpl)) {
     job.mustache = true;
