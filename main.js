@@ -283,7 +283,7 @@ rest.post('/rest/print', function(req, res) {
     console.log(req.body.type);
   }
   
-  if(!req.body.label && !req.body.type){
+  if((!req.body.label && req.body.type) || (req.body.label && !req.body.type)){
     return res.status(400).send('no label id or label type was given');
   }; 
 
