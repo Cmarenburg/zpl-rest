@@ -266,7 +266,7 @@ rest.post('/rest/print', function(req, res) {
   }
   
   if(req.body.data) {
-    console.log(data);
+    console.log(req.body.data);
   }
 
   // If both label and type are given return error
