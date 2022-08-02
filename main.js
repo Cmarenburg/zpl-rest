@@ -265,7 +265,7 @@ rest.post('/rest/print/zpl', function(req, res) {
   }
   
   // If both label and type are given return error
-  if (req.body.zpl) {
+  if (!req.body.zpl) {
     return res.status(400).send('ZPL not included');
   }
 
@@ -283,11 +283,7 @@ rest.post('/rest/print/zpl', function(req, res) {
   job.printer_address = printer.address;
   job.printer_ip = printer.address.split(':')[0];
   job.printer_port = parseInt(printer.address.split(':')[1]);
-  job.label_id = label._id;
-  job.label_name = label.name;
-  job.label_zpl = label.zpl;
   job.data = req.body.data;
-
 
   job.zpl = req.body.zpl;
 
