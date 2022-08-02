@@ -299,6 +299,7 @@ rest.post('/rest/print/zpl', function(req,res){
     res.json(job)
 
 
+})
 });
 
 // actuall print
