@@ -258,6 +258,49 @@ rest.post('/rest/reprint/(:id)', function(req, res) {
   });
 });
 
+rest.post('/rest/print/zpl', function(req,res){ 
+
+  var response = {};
+
+  if (!req.body.printer) {
+    return res.status(400).send('no printer id was given');
+  }
+
+  if (!req.body.zpl) {
+    return res.status(400).send('no ZPL code was given');
+  }
+
+  var job = {};
+  job.date = new Date();
+  job.printer_id = printer._id;
+  job.printer_name = printer.name;
+  job.printer_address = printer.address;
+  job.printer_ip = printer.address.split(':')[0];
+  job.printer_port = parseInt(printer.address.split(':')[1]);
+  job.label_id = label._id;
+  job.label_name = label.name;
+  job.label_zpl = label.zpl;
+  job.data = req.body.data;
+
+
+  job.zpl = req.body.zpl;
+
+  console.log((new Date()) + ' print job received', job);
+
+  executeRequest(job, function(ret) {
+    job = ret;
+    db.jobs.save(job);
+
+    var broadcast = {};
+    broadcast.source = "job";
+    broadcast.data = job;
+    broadcastMsg(broadcast);
+
+    res.json(job)
+
+
+});
+
 // actuall print
 rest.post('/rest/print', function(req, res) {
   var response = {};
@@ -265,10 +308,6 @@ rest.post('/rest/print', function(req, res) {
     return res.status(400).send('no printer id was given');
   }
   
-  if(req.body.data) {
-    console.log(req.body.data);
-  }
-
   // If both label and type are given return error
   if (req.body.label && req.body.type) {
     return res.status(400).send('label id and label type are mutually exclusive');
