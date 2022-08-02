@@ -258,16 +258,22 @@ rest.post('/rest/reprint/(:id)', function(req, res) {
   });
 });
 
-rest.post('/rest/print/zpl', function(req,res){ 
-
+rest.post('/rest/print/zpl', function(req, res) {
   var response = {};
-
   if (!req.body.printer) {
     return res.status(400).send('no printer id was given');
   }
+  
+  // If both label and type are given return error
+  if (req.body.zpl) {
+    return res.status(400).send('ZPL not included');
+  }
 
-  if (!req.body.zpl) {
-    return res.status(400).send('no ZPL code was given');
+  var printer = db.printer.findOne({
+    _id: req.body.printer
+  });
+  if (!printer) {
+    return res.status(400).send('given printer id was not valid');
   }
 
   var job = {};
@@ -287,21 +293,6 @@ rest.post('/rest/print/zpl', function(req,res){
 
   console.log((new Date()) + ' print job received', job);
 
-  if(req.body.printer){
-    var printer = db.printer.findOne({
-      _id: req.body.printer
-    });
-    if (!printer) {
-      return res.status(400).send('given printer id was not valid');
-    }
-    job.printer_id = printer._id;
-    job.printer_name = printer.name;
-    job.printer_address = printer.address;
-    job.printer_ip = printer.address.split(':')[0];
-    job.printer_port = parseInt(printer.address.split(':')[1]);
-  }
-
-
   executeRequest(job, function(ret) {
     job = ret;
     db.jobs.save(job);
@@ -312,9 +303,7 @@ rest.post('/rest/print/zpl', function(req,res){
     broadcastMsg(broadcast);
 
     res.json(job)
-
-
-})
+  });
 });
 
 // actuall print
